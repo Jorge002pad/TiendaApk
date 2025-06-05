@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
+import 'product_detail.dart';
 
 class CatalogPage extends StatelessWidget {
   final List<Product> products;
@@ -17,40 +18,76 @@ class CatalogPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.all(10),
+    return GridView.builder(
+      padding: const EdgeInsets.all(12),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2, // 2 columnas
+        childAspectRatio: 3 / 4, // Alto relativo al ancho
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+      ),
       itemCount: products.length,
       itemBuilder: (context, index) {
         final product = products[index];
-        final isFavorite = favorites.contains(product);
+        final isFav = favorites.contains(product);
 
-        return Card(
-          margin: const EdgeInsets.symmetric(vertical: 8),
-          elevation: 4,
-          child: ListTile(
-            leading: Image.asset(
-              product.image,
-              width: 50,
-              height: 50,
-              fit: BoxFit.cover,
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ProductDetailPage(product: product),
+              ),
+            );
+          },
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
-            title: Text(product.name),
-            subtitle: Text('\$${product.price.toStringAsFixed(2)}'),
-            trailing: Wrap(
-              spacing: 12,
-              children: [
-                IconButton(
-                  icon: Icon(
-                    isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: isFavorite ? Colors.red : null,
+            elevation: 5,
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Image.asset(
+                      product.imagePath,
+                      height: 80,
+                    ),
                   ),
-                  onPressed: () => onFavoriteToggle(product),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.add_shopping_cart),
-                  onPressed: () => onAddToCart(product),
-                ),
-              ],
+                  const SizedBox(height: 10),
+                  Text(
+                    product.name,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    '\$${product.price.toStringAsFixed(2)}',
+                    style: const TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                  const Spacer(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          isFav ? Icons.favorite : Icons.favorite_border,
+                          color: isFav ? Colors.red : Colors.grey,
+                        ),
+                        onPressed: () => onFavoriteToggle(product),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.add_shopping_cart),
+                        onPressed: () => onAddToCart(product),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         );

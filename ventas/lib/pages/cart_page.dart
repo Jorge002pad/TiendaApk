@@ -40,7 +40,7 @@ class CartPage extends StatelessWidget {
                 elevation: 4,
                 child: ListTile(
                   leading: Image.asset(
-                    product.image,
+                    product.imagePath,
                     width: 50,
                     height: 50,
                     fit: BoxFit.cover,

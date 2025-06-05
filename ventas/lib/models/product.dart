@@ -1,12 +1,14 @@
 class Product {
   final String name;
   final double price;
-  final String image;
+  final bool isFavorite;
+  final String imagePath;
 
   Product({
     required this.name,
     required this.price,
-    required this.image,
+    required this.isFavorite,
+    required this.imagePath,
   });
 
   // Para poder comparar productos por su nombre

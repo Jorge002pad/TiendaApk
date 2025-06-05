@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'pages/catalog_page.dart';
 import 'pages/favorites_page.dart';
 import 'pages/cart_page.dart';
+import 'pages/add_page.dart'; // 👈 nueva página
 import 'models/product.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,13 +16,19 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
   final List<Product> _allProducts = [
-    Product(name: 'Camiseta', price: 20.0, image: 'assets/images/product.png'),
-    Product(name: 'Pantalón', price: 35.0, image: 'assets/images/product.png'),
-    Product(name: 'Zapatos', price: 50.0, image: 'assets/images/product.png'),
+    Product(name: 'Camiseta', isFavorite: false, price: 20.0, imagePath: 'assets/images/product.png'),
+    Product(name: 'Pantalón', isFavorite: true, price: 35.0, imagePath: 'assets/images/product.png'),
+    Product(name: 'Zapatos', isFavorite: false, price: 50.0, imagePath: 'assets/images/product.png'),
   ];
 
   final List<Product> _favorites = [];
   final List<Product> _cart = [];
+
+  void _addProduct(Product product) {
+    setState(() {
+      _allProducts.add(product);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +48,7 @@ class _HomePageState extends State<HomePage> {
         cart: _cart,
         onRemoveFromCart: _removeFromCart,
       ),
+      AddPage(onProductAdded: _addProduct), // 👈 NUEVA PÁGINA
     ];
 
     return Scaffold(
@@ -55,6 +63,9 @@ class _HomePageState extends State<HomePage> {
             _selectedIndex = index;
           });
         },
+        selectedItemColor: Colors.blue,       // Color del ítem seleccionado
+        unselectedItemColor: Colors.grey,     // Color de ítems no seleccionados
+        backgroundColor: Colors.white,        // Fondo de la barra
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.store),
@@ -67,6 +78,10 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
             label: 'Carrito',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'Agregar',
           ),
         ],
       ),
@@ -82,6 +97,7 @@ class _HomePageState extends State<HomePage> {
       }
     });
   }
+
   void _addToCart(Product product) {
     setState(() {
       _cart.add(product);
@@ -94,4 +110,3 @@ class _HomePageState extends State<HomePage> {
     });
   }
 }
-
