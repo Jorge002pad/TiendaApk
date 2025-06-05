@@ -1,62 +1,56 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
-import 'product_detail.dart';
 
 class CatalogPage extends StatelessWidget {
   final List<Product> products;
-  final List<Product> favorites;
   final Function(Product) onFavoriteToggle;
   final Function(Product) onAddToCart;
+  final List<Product> favorites;
 
   const CatalogPage({
     super.key,
     required this.products,
-    required this.favorites,
     required this.onFavoriteToggle,
     required this.onAddToCart,
+    required this.favorites,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: const EdgeInsets.all(12),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2, // 2 columnas
-        childAspectRatio: 3 / 4, // Alto relativo al ancho
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-      ),
-      itemCount: products.length,
-      itemBuilder: (context, index) {
-        final product = products[index];
-        final isFav = favorites.contains(product);
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: GridView.builder(
+        // Número de productos
+        itemCount: products.length,
 
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => ProductDetailPage(product: product),
-              ),
-            );
-          },
-          child: Card(
+        // Cómo se verá cada card
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2, // ← Número de columnas (cámbialo a 1 o 3 si quieres)
+          childAspectRatio: 3 / 4, // ← Proporción ancho/alto (ajústalo libremente)
+          crossAxisSpacing: 12, // ← Espacio horizontal entre cards
+          mainAxisSpacing: 12, // ← Espacio vertical entre cards
+        ),
+
+        itemBuilder: (context, index) {
+          final product = products[index];
+
+          return Card(
+            elevation: 4,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
-            elevation: 5,
             child: Padding(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Center(
+                  Expanded(
                     child: Image.asset(
                       product.imagePath,
-                      height: 80,
+                      fit: BoxFit.contain,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
                   Text(
                     product.name,
                     style: const TextStyle(
@@ -64,10 +58,13 @@ class CatalogPage extends StatelessWidget {
                       fontSize: 16,
                     ),
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 4),
                   Text(
                     '\$${product.price.toStringAsFixed(2)}',
-                    style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 14,
+                    ),
                   ),
                   const Spacer(),
                   Row(
@@ -75,23 +72,23 @@ class CatalogPage extends StatelessWidget {
                     children: [
                       IconButton(
                         icon: Icon(
-                          isFav ? Icons.favorite : Icons.favorite_border,
-                          color: isFav ? Colors.red : Colors.grey,
+                          product.isFavorite ? Icons.favorite : Icons.favorite_border,
+                          color: product.isFavorite ? Colors.red : Colors.grey,
                         ),
                         onPressed: () => onFavoriteToggle(product),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.add_shopping_cart),
+                        icon: const Icon(Icons.shopping_cart),
                         onPressed: () => onAddToCart(product),
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
